@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f4f0e9">
+<title>测测你的本命定居城市</title>
+<style>
+:root{--bg:#f4f0e9;--paper:#fffdf8;--ink:#39433f;--muted:#7b8178;--sage:#9eafa0;--sage-dark:#657d6d;--rose:#d8b7ad;--sand:#e7dccb;--line:#e8e1d7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.65}
+button{font:inherit;cursor:pointer}.app{max-width:560px;min-height:100vh;margin:auto;padding:20px 18px 40px;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);letter-spacing:.08em;margin:2px 2px 26px}.logo{font-weight:700;color:var(--sage-dark)}
+.panel{background:var(--paper);border:1px solid rgba(130,120,100,.12);border-radius:26px;padding:25px 22px;box-shadow:0 12px 36px rgba(76,68,54,.045)}
+.hero{position:relative;overflow:hidden;padding-top:34px}.eyebrow{display:inline-flex;align-items:center;gap:7px;border-radius:99px;padding:5px 11px;background:#edf0e8;color:#667c6b;font-size:12px;letter-spacing:.04em}
+h1{font-size:clamp(29px,7vw,40px);line-height:1.25;letter-spacing:-.04em;margin:18px 0 14px;font-weight:750}.sub{font-size:15px;color:#737b72;margin:0;max-width:390px}.art{height:160px;margin:26px -4px 10px;position:relative;border-radius:20px;background:linear-gradient(150deg,#e8e5d9,#d6e0d6 60%,#ead9cf);overflow:hidden}
+.sun{position:absolute;width:76px;height:76px;border-radius:50%;background:#e8c9ad;right:22%;top:22px}.hill{position:absolute;bottom:-34px;width:120%;height:115px;left:-10%;border-radius:50% 50% 0 0;background:#aab9a5;transform:rotate(-7deg)}.hill2{position:absolute;bottom:-50px;width:120%;height:115px;right:-24%;border-radius:50% 50% 0 0;background:#849b8b;transform:rotate(9deg)}.little{position:absolute;z-index:2;bottom:20px;left:18px;color:white;font-size:12px;letter-spacing:.12em}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 22px}.pill{font-size:12px;color:#737a70;border:1px solid var(--line);border-radius:99px;padding:5px 10px}
+.primary,.secondary{width:100%;border:0;border-radius:15px;padding:14px 18px;font-weight:650;transition:transform .15s}.primary{background:var(--sage-dark);color:white;box-shadow:0 7px 16px #657d6d24}.primary:active,.secondary:active{transform:scale(.99)}.secondary{background:#edf0e8;color:var(--sage-dark);margin-top:10px}
+.note{font-size:12px;color:#92958c;text-align:center;margin:14px 0 0}
+.hidden{display:none!important}.qhead{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;margin-bottom:12px}.progress{height:5px;background:#eee9df;border-radius:10px;overflow:hidden;margin-bottom:27px}.bar{height:100%;background:var(--sage-dark);width:0;transition:width .2s}
+.qkicker{font-size:12px;color:var(--sage-dark);letter-spacing:.1em}.question{font-size:25px;line-height:1.4;margin:10px 0 8px;letter-spacing:-.025em}.hint{font-size:13px;color:var(--muted);margin:0 0 22px}.options{display:grid;gap:10px}.option{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:#fffdf9;color:var(--ink);border-radius:15px;padding:14px 13px;min-height:58px}.option .letter{flex:none;width:28px;height:28px;border-radius:10px;background:#f0eee6;display:grid;place-items:center;font-size:12px;color:#81877b}.option.selected{border-color:#8ea291;background:#f0f4ed}.option.selected .letter{background:var(--sage-dark);color:#fff}
+.nav{display:flex;gap:10px;margin-top:24px}.nav button{flex:1}.back{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:15px;padding:13px}
+.result-top{text-align:center;padding:7px 0 20px}.result-icon{width:70px;height:70px;margin:0 auto 15px;border-radius:24px;background:#e9eee5;display:grid;place-items:center;font-size:30px}.result-label{font-size:12px;color:var(--sage-dark);letter-spacing:.15em}.cityname{font-size:36px;line-height:1.2;margin:9px 0 5px;letter-spacing:-.04em}.country{font-size:13px;color:var(--muted)}.tagrow{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:15px}.result-card{border-radius:18px;background:#f7f4ed;padding:17px;margin-top:12px}.result-card h3{font-size:14px;margin:0 0 7px}.result-card p{font-size:14px;margin:0;color:#666f66}.result-card.down{background:#f5eae5}.result-footer{font-size:12px;color:#8b8d84;margin:18px 3px 0}.share{background:#e5d7c8;color:#655b4f}
+@media(min-width:560px){.app{padding-top:28px}.panel{padding:30px 28px}}
+
+.match-score {
+    display:flex; align-items:center; justify-content:center;
+    gap:10px; margin:18px auto 8px;
+}
+.match-score-number {
+    font-size:38px; font-weight:750; color:var(--sage-dark);
+    letter-spacing:-.04em; line-height:1.1;
+}
+.match-score-info {
+    text-align:left; font-size:12px; color:var(--muted);
+}
+.match-level {
+    display:inline-block; padding:5px 11px; margin-top:5px;
+    background:#edf0e8; border-radius:99px;
+    color:var(--sage-dark); font-weight:650;
+}
+.city-visual {
+    position:relative; overflow:hidden; min-height:145px;
+    border-radius:20px; margin:18px 0; padding:22px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    background:
+      radial-gradient(circle at 75% 25%,#f1d9b9 0 30px,transparent 31px),
+      linear-gradient(150deg,#e5e3d7,#cbd8cb 60%,#e7d5c8);
+}
+.city-visual::before,.city-visual::after {
+    content:""; position:absolute; left:-10%; width:120%; height:90px;
+    border-radius:50% 50% 0 0;
+}
+.city-visual::before {
+    bottom:-35px; background:#aab9a5; transform:rotate(-5deg);
+}
+.city-visual::after {
+    bottom:-55px; left:20%; background:#849b8b; transform:rotate(7deg);
+}
+.city-visual-label {
+    position:relative; z-index:2; color:white;
+    font-size:12px; letter-spacing:.13em;
+}
+.result-section-title {
+    font-size:19px; margin:26px 0 5px; letter-spacing:-.025em;
+}
+.result-section-subtitle {
+    color:var(--muted); font-size:12px; margin:0 0 13px;
+}
+.profile-tags { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 18px; }
+.profile-tag {
+    background:#edf0e8; color:#657d6d; border:1px solid #dce4d9;
+    border-radius:12px; padding:8px 11px; font-size:12px;
+}
+.profile-tag span { display:block; font-size:10px; color:#8a9287; margin-top:2px; }
+.result-card.match-reason { background:#edf1e9; }
+.result-card.climate-card { background:#f0eee7; }
+.city-alternatives { display:grid; gap:10px; margin-top:12px; }
+.alternative-city {
+    border:1px solid var(--line); border-radius:16px;
+    padding:15px; background:#fffdf9;
+}
+.alternative-top {
+    display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+}
+.alternative-name { font-size:17px; font-weight:700; }
+.alternative-country { color:var(--muted); font-size:11px; }
+.alternative-score { white-space:nowrap; color:var(--sage-dark); font-size:14px; font-weight:700; }
+.alternative-reason { color:#666f66; font-size:13px; margin-top:8px; }
+.share-message {
+    margin-top:18px; padding:18px; border-radius:18px;
+    background:#f2e8dd; color:#655b4f;
+}
+.share-message h3 { margin:0 0 8px; font-size:15px; }
+.share-message p { margin:0; font-size:14px; line-height:1.8; }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><span class="logo">LITTLE CITY LAB</span><span>生活偏好探索 · 01</span></div>
+  <section id="intro" class="panel hero">
+    <span class="eyebrow">✦ 一次关于生活的想象</span>
+    <h1>测测你的<br>本命定居城市</h1>
+    <p class="sub">你最适合在哪长期定居？从气候、节奏到日常偏好，用 15 道题，看看哪座城市更接近你向往的生活。</p>
+    <div class="art"><div class="sun"></div><div class="hill"></div><div class="hill2"></div><div class="little">FIND YOUR OWN PACE</div></div>
+    <div class="meta"><span class="pill">15 道轻量选择题</span><span class="pill">国内外 50 座城市</span><span class="pill">约 3 分钟</span></div>
+    <button class="primary" id="start">开始探索 →</button>
+    <p class="note">没有标准答案，跟着真实偏好选就好。</p>
+  </section>
+
+  <section id="quiz" class="panel hidden">
+    <div class="qhead"><span id="counter">QUESTION 01 / 15</span><span id="pct">7%</span></div>
+    <div class="progress"><div id="bar" class="bar"></div></div>
+    <div class="qkicker">关于你的生活偏好</div>
+    <h2 id="qtitle" class="question"></h2><p id="qhint" class="hint">选一个最接近你真实想法的答案</p>
+    <div id="options" class="options"></div>
+    <div class="nav"><button class="back" id="prev">上一步</button><button class="primary" id="next" disabled>下一题 →</button></div>
+    <p class="note">答案只用于本次城市匹配，不会上传。</p>
+  </section>
+
+  <section id="result" class="panel hidden">
+    <div class="result-top"><div class="result-icon">⌂</div><div class="result-label">YOUR CITY MATCH</div><h2 id="cityName" class="cityname"></h2><div id="cityCountry" class="country"></div><div id="tags" class="tagrow"></div></div>
+    <p id="summary" style="font-size:15px;color:#5e685f;text-align:center;margin:0 0 18px"></p>
+
+<div class="city-visual">
+  <div id="cityVisualLabel" class="city-visual-label">FIND YOUR OWN PACE</div>
+</div>
+<div class="match-score">
+  <div id="matchScore" class="match-score-number">--%</div>
+  <div class="match-score-info">
+    <div>你的定居偏好匹配度</div>
+    <div id="matchLevel" class="match-level">生活匹配指数</div>
+  </div>
+</div>
+<h3 class="result-section-title">你的定居偏好画像</h3>
+<p class="result-section-subtitle">从你的实际回答中提炼生活关键词。</p>
+<div id="profileTags" class="profile-tags"></div>
+<div class="result-card match-reason">
+  <h3>✦ 为什么这座城市适合你</h3><p id="matchReason"></p>
+</div>
+<div class="result-card">
+  <h3>♡ 适合什么样的你</h3><p id="personalityDetail"></p>
+</div>
+<div class="result-card climate-card">
+  <h3>☼ 气候与生活体验</h3><p id="climateDetail"></p>
+</div>
+<h3 class="result-section-title">还有 3 座城市，也值得你看看</h3>
+<p class="result-section-subtitle">它们也与你的部分偏好契合，但各有侧重。</p>
+<div id="alternativeCities" class="city-alternatives"></div>
+<div class="share-message">
+  <h3>写给未来生活的你</h3><p id="shareMessage"></p>
+</div>
+
+
+    <div class="result-card"><h3>☀︎ 这里吸引你的地方</h3><p id="pros"></p></div>
+    <div class="result-card"><h3>♡ 可能适合这样的你</h3><p id="personality"></p></div>
+    <div class="result-card down"><h3>☁︎ 定居前也要想一想</h3><p id="cons"></p></div>
+    <div class="result-footer">这是一份基于生活偏好的趣味匹配，不是专业心理测评或定居建议。实际选择还需考虑签证、工作、预算、医疗与居住条件。</div>
+    <button class="primary share" id="share" style="margin-top:20px">复制我的城市结果</button>
+    <button class="secondary" id="restart">重新测试 ↻</button>
+  </section>
+  <div style="text-align:center;color:#a1a094;font-size:11px;margin-top:22px">A SMALL TEST FOR YOUR BIGGER LIFE</div>
+</div>
+<script>
+const questions=[
+{q:"你最舒服的天气是哪一种？",o:["四季分明，能感受到季节变化","温暖偏热，阳光多一点","凉爽舒服，夏天别太难熬","天气温和稳定，不要太极端"],t:["season","warm","cool","mild"]},
+{q:"你理想中的日常节奏更接近？",o:["快一点，机会多、效率高","松弛一点，生活不用总赶路","工作日认真忙，休息日慢下来","有活力但不想时时刻刻被催"],t:["fast","slow","balanced","moderate"]},
+{q:"你对通勤的接受程度是？",o:["短通勤最重要，愿意为此多花点钱","可以通勤一会儿，换更大的发展空间","骑车或步行能到最好","交通方便就行，距离不是唯一标准"],t:["convenience","career","walkable","transit"]},
+{q:"吃东西这件事，你最在意？",o:["重口味、地方特色，吃得开心","清淡健康，食材新鲜","国际化，想吃什么都容易找到","咖啡馆、小餐馆和日常烟火气"],t:["foodie","healthy","international","cozy"]},
+{q:"你能接受长期潮湿的天气吗？",o:["不太能，干爽更重要","可以接受，只要别太闷热","能适应，雨天也有情调","更在意温度，湿度可以商量"],t:["dry","dry","rain","mild"]},
+{q:"下班后的理想状态是？",o:["去看展、逛街、参加活动","回家休息，安静做自己的事","去公园、海边或户外走走","约朋友吃饭，感受城市烟火气"],t:["culture","quiet","nature","social"]},
+{q:"你期待的收入与生活成本关系是？",o:["愿意承担高成本，换更多职业机会","希望生活成本合理，存钱更容易","收入够用就好，时间和舒适更重要","希望机会与生活成本相对平衡"],t:["career","affordable","slow","balanced"]},
+{q:"你最喜欢哪种自然环境？",o:["海边，能看到水就很治愈","山林和绿地，适合散步徒步","湖泊、公园，城市里也要有自然","都可以，文化和便利更重要"],t:["coastal","nature","green","culture"]},
+{q:"你希望身边的城市氛围是？",o:["多元开放，大家可以做自己","熟人感强，有烟火气和人情味","国际化，能接触不同文化","安静有秩序，边界感清晰"],t:["open","cozy","international","orderly"]},
+{q:"你更喜欢怎样的居住空间？",o:["小一点没关系，位置方便最重要","宽敞舒适，家是放松的地方","有阳台或绿化，能亲近自然","交通便利、设施齐全就好"],t:["convenience","space","green","transit"]},
+{q:"你对冬天的态度是？",o:["喜欢下雪和冷空气","最好温暖，不想穿太多","冷一点没关系，但别太漫长","四季都可以，生活方便更重要"],t:["season","warm","cool","balanced"]},
+{q:"周末你最可能怎么过？",o:["逛街、看演出、探索新店","在家充电，找个舒服的咖啡馆","短途旅行、徒步或海边散心","和朋友吃饭，慢慢过一天"],t:["culture","quiet","nature","social"]},
+{q:"你希望城市给你最多的是什么？",o:["职业发展和新机会","稳定舒适、能长期生活","自由感和探索新鲜事物的空间","安全、便利和生活秩序"],t:["career","balanced","open","orderly"]},
+{q:"面对陌生环境，你通常会？",o:["很快认识新朋友，主动探索","先观察，熟悉后再慢慢融入","更在意有没有自己的空间","只要生活便利，就能慢慢适应"],t:["social","quiet","open","convenience"]},
+{q:"如果未来生活有一个关键词，你选？",o:["蓬勃：不断成长，机会很多","松弛：把日子过得舒服一点","平衡：工作、关系和自己都照顾到","新鲜：随时可以发现新东西"],t:["career","slow","balanced","international"]}
+];
+const cities=[
+["成都","中国 · 四川","慢节奏","美食","慢生活与丰富的日常烟火气很容易让人找到归属感，公园、茶馆和小馆子都能成为生活的一部分。","喜欢美食、重视生活质感，也希望工作之外留有自己时间的人。","热门区域的通勤和住房成本仍需考虑，潮湿天气也不是每个人都适应。",["slow","foodie","cozy","social"]],
+["杭州","中国 · 浙江","自然与科技","平衡","湖山景致与数字产业并存，既能享受自然，也有相对丰富的职业机会。","想兼顾事业发展、城市便利和自然环境的人。","热门板块住房成本不低，梅雨季节可能让怕潮的人有点为难。",["career","green","balanced","mild"]],
+["上海","中国 · 上海","国际化","机会","多元文化、公共交通与丰富的职业机会，让生活有很多种打开方式。","喜欢快节奏、重视职业选择，也享受文化活动和城市便利的人。","生活成本较高，节奏也容易让人忙起来，需要主动留出休息时间。",["fast","career","international","culture","transit"]],
+["广州","中国 · 广东","美食之都","活力","美食、商业活力和日常烟火气融合得自然，生活氛围鲜活又接地气。","重视吃喝体验、喜欢务实生活方式和多元城市氛围的人。","夏季炎热潮湿，出行和居住体验会受到天气影响。",["warm","foodie","social","open"]],
+["深圳","中国 · 广东","年轻活力","发展","城市节奏快、新机会多，适合想主动探索职业可能性的人。","目标感较强、愿意尝试新事物，也喜欢多元环境的人。","住房与生活成本不低，快节奏需要自己找到平衡。",["fast","career","open","warm"]],
+["厦门","中国 · 福建","海边生活","松弛","海岸线、街巷和温暖气候，让日常多了一点散步和看海的理由。","喜欢海边、偏爱温暖气候，希望生活有呼吸感的人。","旅游旺季人流较多，部分区域住房成本不算低。",["coastal","warm","slow","social"]],
+["苏州","中国 · 江苏","江南日常","温润","园林、水巷与现代产业相互交织，城市生活有细腻的一面，也有务实的便利。","喜欢安静、有文化感，又不想远离就业与城市配套的人。","季节湿润，部分通勤场景仍要看具体居住和工作位置。",["culture","balanced","orderly","mild"]],
+["南京","中国 · 江苏","四季城市","人文","人文底蕴、大学氛围和城市配套兼具，适合在熟悉感与活力之间寻找平衡。","喜欢历史文化、四季变化和相对完整城市生活的人。","夏季可能闷热，热门区域通勤体验因地段而异。",["season","culture","balanced","social"]],
+["青岛","中国 · 山东","海风与城市","清爽","海岸风景与城市生活结合，适合把散步、看海当作日常小仪式的人。","喜欢海边、凉爽一些的夏天，也看重城市生活配套的人。","冬季偏冷，海风明显，部分行业机会需结合职业方向判断。",["coastal","cool","orderly","nature"]],
+["大连","中国 · 辽宁","海滨慢调","清凉","海滨环境和相对舒展的城市空间，让生活多一点从容感。","喜欢海边、偏爱凉爽天气，不追求极端快节奏的人。","冬季较冷，行业机会和岗位选择需要提前研究。",["coastal","cool","slow","nature"]],
+["昆明","中国 · 云南","四季如春","自然","气候温和、户外空间丰富，适合把散步和自然融进日常的人。","对温度敏感、喜欢户外和舒适节奏的人。","部分行业岗位选择相对有限，跨城发展前要了解当地机会。",["mild","nature","slow","green"]],
+["大理","中国 · 云南","山海日常","松弛","苍山洱海与户外生活带来独特吸引力，适合喜欢自然和慢节奏的人。","重视自由感、自然环境和生活体验的人。","旅游季节性明显，稳定就业与医疗教育配套要具体评估。",["nature","slow","coastal","space"]],
+["重庆","中国 · 重庆","山城烟火","热辣","层次丰富的城市地形、夜景和热闹美食，让日常有鲜明的城市性格。","喜欢热闹、重口味美食和有辨识度城市氛围的人。","坡道较多，夏季炎热，通勤体验要看具体区域。",["foodie","warm","social","culture"]],
+["武汉","中国 · 湖北","热气腾腾","活力","高校、江湖气和丰富小吃构成鲜活日常，城市生活有种直接的热情。","喜欢美食、社交和有活力的城市生活的人。","夏季炎热，跨区通勤可能耗时，选住址要认真规划。",["foodie","social","fast","season"]],
+["长沙","中国 · 湖南","快乐日常","美食","夜生活和小吃文化很有存在感，生活氛围热闹，容易找到一起玩的人。","爱吃爱逛、喜欢热闹，也愿意体验城市新鲜事物的人。","夏季湿热，热门地段人流多，安静需求高的人要选好区域。",["foodie","social","warm","open"]],
+["西安","中国 · 陕西","历史与烟火","人文","历史文化与现代城市生活交织，日常既有厚重感，也不缺生活气息。","喜欢历史、美食和四季分明环境的人。","冬季偏冷，夏季也热，沙尘和天气变化值得留意。",["culture","foodie","season","balanced"]],
+["天津","中国 · 天津","松弛都市","生活感","有自己的城市节奏和饮食文化，生活便利度与大城市感可以兼顾。","喜欢城市配套、地方特色和不那么紧绷的日常的人。","冬季较冷，部分产业机会要结合具体职业领域判断。",["balanced","foodie","orderly","season"]],
+["珠海","中国 · 广东","海风慢生活","宜居感","海滨环境与相对舒展的生活节奏，让人容易把注意力放回日常。","偏爱温暖、海边和相对安静生活的人。","夏季湿热，职业选择和薪资水平需结合行业具体判断。",["coastal","warm","slow","orderly"]],
+["宁波","中国 · 浙江","务实宜居","平衡","产业基础与生活配套兼具，适合追求稳定发展和日常舒适度的人。","看重就业基础、城市便利和生活平衡的人。","天气湿润，城市社交和文化活动选择因个人兴趣而异。",["career","balanced","orderly","mild"]],
+["无锡","中国 · 江苏","湖畔生活","舒适","湖泊绿地、产业基础和城市配套并存，日常节奏相对有秩序。","喜欢自然环境、重视生活便利和稳定感的人。","湿润天气和季节变化明显，岗位选择要看专业方向。",["green","balanced","orderly","season"]],
+["北京","中国 · 北京","文化与机会","广阔","文化资源、职业机会和多样生活方式集中，适合想不断拓宽边界的人。","目标感强、愿意面对竞争，也重视文化体验的人。","住房成本与通勤压力较突出，气候偏干，生活需要提前规划。",["career","fast","culture","dry"]],
+["三亚","中国 · 海南","热带海边","阳光","海滩、阳光和户外生活很有吸引力，适合把自然体验放进日常的人。","喜欢温暖气候、海边活动和户外生活的人。","旅游旺季人多，湿热天气明显，工作机会需结合行业评估。",["coastal","warm","slow","nature"]],
+["哈尔滨","中国 · 黑龙江","冰雪四季","鲜明","冬季景观与城市文化辨识度高，四季变化带来鲜明的生活体验。","喜欢冬天、能接受寒冷，也欣赏地方文化的人。","冬季漫长寒冷，怕冷的人需要认真考虑，岗位选择也需提前了解。",["season","cool","culture","foodie"]],
+["南宁","中国 · 广西","绿意日常","温暖","绿化与温暖气候让户外生活更容易融入日常，生活氛围也比较松弛。","喜欢温暖、绿意和不那么紧绷生活节奏的人。","夏季湿热，部分行业的岗位密度可能不如一线城市。",["mild","warm","green","slow"]],
+["郑州","中国 · 河南","交通枢纽","务实","交通连接与城市配套为生活和工作提供基础，日常选择比较务实。","看重交通便利、生活成本与发展机会平衡的人。","夏冬温差明显，具体居住体验会受到通勤距离影响。",["balanced","transit","career","season"]],
+["东京","日本","秩序与便利","高效","公共交通、便利服务和丰富的城市文化，让日常安排相对高效。","喜欢秩序、城市探索和丰富文化体验的人。","居住空间可能较紧凑，生活成本和语言、签证门槛需要考虑。",["orderly","transit","culture","fast"]],
+["大阪","日本","美食与人情","活力","美食文化浓厚，城市氛围鲜活，日常既有便利也有鲜明地方特色。","喜欢吃喝、社交和城市生活但不想过分拘谨的人。","夏季湿热，工作与长期居留条件需要提前确认。",["foodie","social","transit","warm"]],
+["京都","日本","四季与文化","安静","传统街区、季节景致和文化空间丰富，适合慢慢观察城市的人。","喜欢历史建筑、安静散步和细节美感的人。","旅游旺季拥挤，部分行业岗位相对集中，租住条件需仔细了解。",["culture","quiet","season","walkable"]],
+["福冈","日本","舒适都市","平衡","城市尺度相对亲切，饮食和交通便利度有吸引力，生活不必时时紧绷。","喜欢城市便利、地方美食和相对舒展节奏的人。","海外就业与居留条件需单独评估，夏季也会潮湿炎热。",["balanced","foodie","transit","cozy"]],
+["首尔","韩国","流行文化","快节奏","流行文化、购物、美食和公共交通选择丰富，城市能量很足。","喜欢潮流、文化活动和高密度城市生活的人。","竞争与生活成本需要考虑，冬季寒冷，语言能力也很重要。",["fast","culture","transit","social"]],
+["台北","中国台湾","便利与人情","日常","便利店、公共交通、美食和生活服务密集，日常安排比较方便。","重视便利、喜欢美食与城市人情味的人。","湿热与台风季需要考虑，长期居住资格与工作条件要提前了解。",["foodie","transit","cozy","warm"]],
+["新加坡","新加坡","国际化与秩序","高效","多元文化、公共交通与城市管理为日常提供便利，国际化工作环境也有吸引力。","重视效率、喜欢多元环境并愿意规划职业发展的人。","生活成本较高，全年炎热潮湿，工作准证要求需核实。",["international","orderly","career","warm"]],
+["墨尔本","澳大利亚","咖啡与文化","多元","咖啡文化、艺术活动和多元社区让城市生活有很多细节可以探索。","喜欢文化活动、咖啡馆和多元生活方式的人。","住房成本不低，天气变化较快，签证和就业要求需确认。",["culture","international","cozy","mild"]],
+["悉尼","澳大利亚","海湾与机会","活力","海岸风景、户外活动与职业机会并存，城市生活选择丰富。","喜欢海边、户外生活和国际化环境的人。","租房和生活成本较高，通勤与工作竞争需纳入考虑。",["coastal","career","international","warm"]],
+["布里斯班","澳大利亚","阳光户外","温暖","阳光和户外活动很有存在感，生活方式偏向亲近自然。","喜欢温暖天气、户外休闲和相对轻松节奏的人。","夏季炎热潮湿，公共交通与就业机会需按居住区域评估。",["warm","nature","slow","coastal"]],
+["珀斯","澳大利亚","阳光与海岸","开阔","海岸线和户外空间带来开阔感，适合喜欢自然与独立节奏的人。","喜欢海边、户外生活和较大个人空间的人。","地理位置相对偏远，行业机会与出行成本需要提前评估。",["coastal","dry","nature","space"]],
+["奥克兰","新西兰","海港与自然","平衡","海港、绿地和多元社区结合，城市生活与自然体验距离不远。","喜欢自然、温和节奏和多元文化的人。","住房成本偏高，天气多变，工作与签证条件需提前确认。",["nature","mild","international","coastal"]],
+["惠灵顿","新西兰","文艺与海风","创意","海港风景、小型文化场景和创意氛围适合喜欢细腻城市体验的人。","喜欢艺术文化、步行探索和相对小巧城市的人。","风大且天气多变，岗位市场规模需要结合职业方向考虑。",["culture","walkable","coastal","cool"]],
+["伦敦","英国","文化与多元","机会","博物馆、演出、社区文化和职业选择丰富，适合喜欢不断发现新事物的人。","重视职业可能性、文化活动和多元环境的人。","住房与交通成本较高，天气多变，签证和就业门槛需确认。",["international","culture","career","transit"]],
+["爱丁堡","英国","历史与步行感","人文","历史街区、文化节和步行友好环境让城市有鲜明气质。","喜欢历史建筑、文化活动和相对紧凑城市的人。","天气偏凉多雨，租房季节性紧张，职业机会需结合行业。",["culture","walkable","cool","orderly"]],
+["曼彻斯特","英国","音乐与活力","年轻","音乐、体育和大学氛围鲜明，生活文化多元，城市活力持续。","喜欢现场音乐、社交活动和年轻城市氛围的人。","天气多雨，部分区域差异较大，租住位置要仔细挑选。",["culture","social","career","rain"]],
+["哥本哈根","丹麦","骑行与设计","平衡","骑行环境、公共空间和设计文化让日常生活很重视舒适与秩序。","喜欢骑行、设计感、秩序和可持续生活方式的人。","生活成本高，冬季日照较少，语言与工作资格需要了解。",["walkable","orderly","green","cool"]],
+["阿姆斯特丹","荷兰","运河与骑行","开放","运河景观、骑行文化和国际化社区，让城市探索很适合融入日常。","喜欢步行骑行、多元文化和独立生活的人。","住房紧张且成本高，天气多变，长期居留与就业需提前确认。",["walkable","international","open","rain"]],
+["柏林","德国","创意与自由","多元","艺术、音乐与多元社群让城市有很强的探索空间，生活方式选择丰富。","重视个人空间、创意文化和多元生活的人。","办事流程与住房市场可能让新来者头疼，冬季较冷。",["open","culture","international","cool"]],
+["慕尼黑","德国","秩序与户外","稳健","城市配套、就业基础和周边自然环境兼具，生活与户外探索可以兼顾。","看重稳定、秩序、职业发展和周末户外的人。","住房成本较高，生活方式相对有规则，语言能力有帮助。",["orderly","career","nature","season"]],
+["巴黎","法国","艺术与日常","浪漫","艺术、建筑、咖啡馆与街区生活构成丰富的城市日常，适合慢慢探索。","喜欢艺术、美食、步行街区和文化体验的人。","住房空间可能有限，生活成本和语言沟通需要考虑。",["culture","walkable","foodie","international"]],
+["里斯本","葡萄牙","阳光与海风","松弛","阳光、海岸和街区咖啡馆带来舒展的生活想象，户外体验丰富。","喜欢温暖气候、海边和较慢生活节奏的人。","住房成本近年受到关注，薪资与生活成本关系需仔细衡量。",["warm","coastal","slow","walkable"]],
+["巴塞罗那","西班牙","海边与建筑","鲜活","海岸、建筑、美食和户外生活交织，日常有很多值得探索的角落。","喜欢阳光、设计、海边和热闹街区的人。","旅游旺季拥挤，住房成本和语言环境需要考虑。",["coastal","culture","social","warm"]],
+["马德里","西班牙","城市烟火","热情","广场、餐馆与夜间社交构成鲜活的城市日常，生活氛围外向。","喜欢美食、社交和晚间城市活动的人。","夏季炎热，作息时间与自己习惯可能不同，工作条件需评估。",["warm","foodie","social","culture"]],
+["温哥华","加拿大","山海与多元","自然","山海景观和多元社区相结合，户外活动很容易成为生活的一部分。","喜欢自然、户外和多元文化，也重视生活环境的人。","住房成本高，雨季较长，工作与居留资格需要提前确认。",["nature","coastal","international","rain"]]];
+// normalize two accidentally malformed entries, and keep exactly 50 city records
+cities[23]=["南宁","中国 · 广西","绿意日常","温暖","绿化与温暖气候让户外生活更容易融入日常，生活氛围也比较松弛。","喜欢温暖、绿意和不那么紧绷生活节奏的人。","夏季湿热，部分行业的岗位密度可能不如一线城市。",["mild","warm","green","slow"]];
+cities[24]=["郑州","中国 · 河南","交通枢纽","务实","交通连接与城市配套为生活和工作提供基础，日常选择比较务实。","看重交通便利、生活成本与发展机会平衡的人。","夏冬温差明显，具体居住体验会受到通勤距离影响。",["balanced","transit","career","season"]];
+const allTags=["season","warm","cool","mild","fast","slow","balanced","moderate","convenience","career","walkable","transit","foodie","healthy","international","cozy","dry","rain","culture","quiet","nature","social","coastal","green","open","space","orderly","affordable"];
+let index=0,answers=Array(questions.length).fill(null),chosen=null;
+const $=id=>document.getElementById(id);
+function show(id){["intro","quiz","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id));window.scrollTo({top:0,behavior:"smooth"})}
+function renderQ(){let q=questions[index];$("counter").textContent=`QUESTION ${String(index+1).padStart(2,"0")} / 15`;$("pct").textContent=`${Math.round((index+1)/15*100)}%`;$("bar").style.width=`${(index+1)/15*100}%`;$("qtitle").textContent=q.q;$("options").innerHTML="";q.o.forEach((label,i)=>{let b=document.createElement("button");b.className="option"+(answers[index]===i?" selected":"");b.innerHTML=`<span class="letter">${["A","B","C","D"][i]}</span><span>${label}</span>`;b.onclick=()=>{answers[index]=i;renderQ()};$("options").appendChild(b)});$("prev").style.visibility=index===0?"hidden":"visible";$("next").disabled=answers[index]===null;$("next").textContent=index===14?"查看我的城市 →":"下一题 →"}
+
+const tagLabels = {
+ season:"喜欢四季变化", warm:"偏爱温暖气候", cool:"偏爱凉爽天气",
+ mild:"喜欢温和气候", fast:"享受城市活力", slow:"向往慢节奏",
+ balanced:"重视生活平衡", moderate:"喜欢适度活力",
+ convenience:"便利优先", career:"重视职业机会",
+ walkable:"喜欢步行生活", transit:"重视交通便利",
+ foodie:"美食爱好者", healthy:"重视健康饮食",
+ international:"喜欢国际化环境", cozy:"偏爱生活烟火气",
+ dry:"偏爱干爽天气", rain:"能接受多雨天气",
+ culture:"重视文化体验", quiet:"需要安静空间",
+ nature:"喜欢亲近自然", social:"享受社交活力",
+ coastal:"向往海边生活", green:"喜欢绿意环境",
+ open:"喜欢开放包容", space:"重视居住空间",
+ orderly:"重视秩序感", affordable:"关注生活成本"
+};
+
+function getAnswerScores() {
+    const scores = {};
+    answers.forEach((a, i) => {
+        if (a === null || a === undefined) return;
+        const tag = questions[i].t[a];
+        if (tag) scores[tag] = (scores[tag] || 0) + 1;
+    });
+    return scores;
+}
+
+function cityScore(city, scores) {
+    return city[7].reduce((sum, tag) => sum + (scores[tag] || 0), 0);
+}
+
+function matchPercent(score) {
+    // 趣味测试的相对指数，不代表真实概率
+    return Math.min(96, Math.round(62 + score / questions.length * 33));
+}
+
+function matchLevel(score) {
+    const p = matchPercent(score);
+    if (p >= 86) return "灵魂同频型";
+    if (p >= 78) return "生活合拍型";
+    if (p >= 70) return "值得探索型";
+    return "可以了解型";
+}
+
+function selectedAnswers() {
+    return answers.map((a, i) => a == null ? null : ({
+        question: questions[i].q,
+        answer: questions[i].o[a],
+        tag: questions[i].t[a]
+    })).filter(Boolean);
+}
+
+function topPreferences(scores, count=4) {
+    return Object.entries(scores)
+        .sort((a,b) => b[1]-a[1] || a[0].localeCompare(b[0]))
+        .slice(0,count)
+        .map(([tag,n]) => ({tag,n}));
+}
+
+function matchEvidence(city, scores) {
+    const tags = city[7];
+    const evidence = selectedAnswers()
+        .filter(a => tags.includes(a.tag))
+        .slice(0,3);
+
+    if (!evidence.length) {
+        return `你的整体偏好与${city[0]}的部分城市特质相符。建议结合预算、工作机会和实际居住体验继续了解。`;
+    }
+
+    return evidence.map(a =>
+        `你选择了“${a.answer}”，这与${city[0]}的部分生活特质相契合。`
+    ).join(" ");
+}
+
+function climateAdvice(city) {
+    const chosenTags = selectedAnswers().map(a => a.tag);
+    const tags = city[7];
+    const advice = [];
+
+    if (chosenTags.includes("dry") &&
+        (tags.includes("warm") || tags.includes("rain"))) {
+        advice.push("你偏爱干爽天气，这座城市可能有湿热或多雨时段，建议了解当地季节性天气。");
+    }
+    if (chosenTags.includes("cool") && tags.includes("warm")) {
+        advice.push("你偏爱凉爽天气，但这座城市可能有炎热季节，建议提前确认自己对夏季体感的接受度。");
+    }
+    if (chosenTags.includes("warm") && tags.includes("cool")) {
+        advice.push("你更喜欢温暖天气，而这座城市可能有较冷的季节，建议了解冬季温度与生活方式。");
+    }
+    if (chosenTags.includes("career") &&
+        tags.includes("slow") && !tags.includes("career")) {
+        advice.push("你比较重视职业发展，而这座城市的优势可能更偏向生活体验。建议核实你所在行业的岗位与薪资。");
+    }
+    if (!city[1].includes("中国")) {
+        advice.push("如果考虑长期定居，还需单独核实签证、工作许可、医疗、税务与住房条件。");
+    }
+    if (!advice.length) {
+        advice.push(city[6]);
+    } else {
+        advice.push("也建议结合住房成本、通勤距离和行业就业情况做实际判断。");
+    }
+    return [...new Set(advice)].join(" ");
+}
+
+function alternativeReason(city, scores) {
+    const matches = city[7]
+        .filter(t => scores[t])
+        .sort((a,b) => (scores[b]||0)-(scores[a]||0))
+        .slice(0,2)
+        .map(t => tagLabels[t] || t);
+
+    return (matches.length
+        ? `与你的${matches.join("、")}偏好有关。`
+        : "可以作为不同生活方式的备选。") + city[4];
+}
+
+// 替换原来的随机同分逻辑，确保结果可重复
+function calc() {
+    const scores = getAnswerScores();
+    const ranked = cities.map((city, i) => ({
+        city, i, score: cityScore(city, scores)
+    })).sort((a,b) => b.score-a.score || a.i-b.i);
+
+    return {scores, ranked, best: ranked[0]};
+}
+
+function finish() {
+    const result = calc();
+    const scores = result.scores;
+    const ranked = result.ranked;
+    chosen = result.best.city;
+
+    const score = result.best.score;
+    const percent = matchPercent(score);
+
+    $("cityName").textContent = chosen[0];
+    $("cityCountry").textContent = chosen[1];
+    $("summary").textContent =
+        `${chosen[2]} · ${chosen[3]}。这座城市与你的部分生活偏好比较合拍。`;
+
+    $("matchScore").textContent = percent + "%";
+    $("matchLevel").textContent = matchLevel(score);
+    $("cityVisualLabel").textContent = `${chosen[0]} · YOUR NEXT CHAPTER`;
+
+    $("pros").textContent = chosen[4];
+    $("personality").textContent = chosen[5];
+    $("personalityDetail").textContent =
+        `${chosen[5]}这些特质可以作为寻找理想生活的线索，而不是固定的人格标签。`;
+
+    $("matchReason").textContent = matchEvidence(chosen, scores);
+    $("climateDetail").textContent = climateAdvice(chosen);
+    $("cons").textContent = chosen[6];
+
+    $("tags").innerHTML = chosen[7].slice(0,3).map(t =>
+        `<span class="pill">${tagLabels[t] || t}</span>`
+    ).join("");
+
+    $("profileTags").innerHTML = topPreferences(scores,4).map(item =>
+        `<div class="profile-tag">${tagLabels[item.tag] || item.tag}<span>来自你的答题偏好</span></div>`
+    ).join("");
+
+    $("alternativeCities").innerHTML = ranked.slice(1,4).map(item =>
+        `<div class="alternative-city">
+          <div class="alternative-top">
+            <div>
+              <div class="alternative-name">${item.city[0]}</div>
+              <div class="alternative-country">${item.city[1]} · ${item.city[2]}</div>
+            </div>
+            <div class="alternative-score">${matchPercent(item.score)}%</div>
+          </div>
+          <div class="alternative-reason">${alternativeReason(item.city,scores)}</div>
+        </div>`
+    ).join("");
+
+    const profile = topPreferences(scores,3)
+        .map(x => tagLabels[x.tag] || x.tag).join("、");
+
+    $("shareMessage").textContent =
+        `也许我向往的不只是一座城市，而是一种适合自己的生活。` +
+        `我的本命定居城市是${chosen[0]}，匹配指数${percent}%。` +
+        `生活关键词：${profile || chosen[2]}。` +
+        `愿未来既有想去的远方，也有愿意回去的地方。`;
+
+    show("result");
+}
+
+$("start").onclick=()=>{index=0;show("quiz");renderQ()};$("prev").onclick=()=>{if(index>0){index--;renderQ()}};$("next").onclick=()=>{if(answers[index]===null)return;if(index<14){index++;renderQ()}else finish()};$("restart").onclick=()=>{answers=Array(15).fill(null);index=0;show("intro")};
+$("share").onclick=async()=>{let text=`我的本命定居城市是：${chosen[0]}（${chosen[1]}）\n${chosen[2]} · ${chosen[3]}\n${chosen[4]}\n适合：${chosen[5]}\n也要考虑：${chosen[6]}\n你也来测测自己的本命定居城市吧！`;try{await navigator.clipboard.writeText(text);$("share").textContent="已复制结果文案 ✓"}catch(e){let ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();$("share").textContent="已复制结果文案 ✓"}};
+</script>
+</body>
+</html>
